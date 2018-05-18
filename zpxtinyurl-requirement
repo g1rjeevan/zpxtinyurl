@@ -1,0 +1,7 @@
+codegen==1.0
+Django==1.11.13
+django-cors-headers==2.1.0
+djangorestframework==3.7.7
+patterns==0.3
+psycopg2==2.7.1
+pytz==2018.4
