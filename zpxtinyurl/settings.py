@@ -25,7 +25,7 @@ SECRET_KEY = 'a=3xg-rttza*s^b2i8==3$%5*pyfk#qm+6iwt!b8#+ps=5#fic'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ 'localhost', '127.0.0.1', '13.127.35.164']
+ALLOWED_HOSTS = [ 'localhost', '127.0.0.1', '13.126.120.225']
 
 
 # Application definition
@@ -88,12 +88,12 @@ WSGI_APPLICATION = 'zpxtinyurl.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'zpxbiturl',
+        'NAME': 'zpxtinyurl',
         'HOST': 'localhost',
         'USER': 'postgres',
-        'PASSWORD': 'root'
+        'PASSWORD': 'admin',
     }
 }
 
@@ -130,7 +130,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+BASE_URL_ = 'http://127.0.0.1:4000'
 
+BASE_URL = 'http://13.126.120.225:4000'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
@@ -145,5 +147,7 @@ CORS_ORIGIN_WHITELIST = (
     'hostname.example.com',
     'localhost:8000',
     '127.0.0.1:9005',
-    'localhost:9005'
+    'localhost:9005',
+    BASE_URL_,
+    BASE_URL
 )

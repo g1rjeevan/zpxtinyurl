@@ -6,5 +6,5 @@ from django.db import models
 # Create your models here.
 class TinyURL(models.Model):
     givenurl = models.URLField(max_length=200)
-    biturl = models.URLField(max_length=200)
+    biturl = models.URLField(max_length=7)
     hitcount = models.PositiveIntegerField(null=True)
