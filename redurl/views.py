@@ -67,7 +67,7 @@ def redirect_url(request, tiny_id):
 
 #Recursive: Random string generator using 'random' of length 7
 def seven_base(tiny_url):
-    bit_url = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits + tiny_url + datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")) for _ in range(7))
+    bit_url = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits + tiny_url + datetime.datetime.now().strftime("%I%M%p%B%d%Y")) for _ in range(7))
     try:
         TinyURL.objects.get(biturl=bit_url).exists()
         bit_url = seven_base(tiny_url)
