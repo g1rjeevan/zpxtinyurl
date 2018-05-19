@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import socket
-import urllib2
-import string
 import random
+import string
 
-from math import floor
+import datetime
+import requests
+import urlparse
 
-from django.shortcuts import render, redirect
-
+from django.shortcuts import redirect
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from redurl.models import TinyURL
-from zpxtinyurl.settings import BASE_URL_, BASE_URL
 
 
 @api_view(['POST'])
@@ -29,34 +27,32 @@ def api_root(request):
         try:
             if request.data:
                 original_url = request.data['original_url']
-                if not original_url.startswith("https://") and  not original_url.startswith("http://") :
+                if not original_url.startswith("https://") and not original_url.startswith("http://"):
                     original_url = "https://" + str(original_url)
-                code = urllib2.urlopen(original_url).getcode()
-                print code
-                if code == 200:
+
+                req = requests.get(original_url)
+                if req.status_code == 200:
                     try:
                         tiny_url = TinyURL.objects.get(givenurl=original_url).biturl
-                    except Exception as e:
-                        print e.message
+                    except:
                         try:
-                            tiny_url = sevenbase(tiny_url).strip()
+                            tiny_url = seven_base(tiny_url).strip()
                             tiny_object = TinyURL(givenurl=original_url, biturl=tiny_url, hitcount=0)
                             tiny_object.save()
                         except Exception as e:
-                            print e.message
-
+                            tiny_url = e.message
 
                 return Response({
-                    'tiny_url': BASE_URL_+"/"+tiny_url,
+                    'tiny_url': "http://"+get_domain(request.build_absolute_uri())+"/"+tiny_url,
                 })
         except Exception as e:
-            print e.message
             return Response({
                 'error': e.message
             })
 
+
 @api_view(['GET'])
-def redirecturl(request, tiny_id):
+def redirect_url(request, tiny_id):
     try:
         tiny_obj = TinyURL.objects.get(biturl=tiny_id)
         tiny_obj.hitcount += 1
@@ -68,12 +64,17 @@ def redirecturl(request, tiny_id):
             'error': 'invalid URL',
         })
 
+
 #Recursive: Random string generator using 'random' of length 7
-def sevenbase(tiny_url):
-    biturl = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits + tiny_url) for _ in range(7))
+def seven_base(tiny_url):
+    bit_url = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits + tiny_url + datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")) for _ in range(7))
     try:
-        TinyURL.objects.get(biturl=biturl).exists()
-        biturl = sevenbase(tiny_url)
+        TinyURL.objects.get(biturl=bit_url).exists()
+        bit_url = seven_base(tiny_url)
     except:
         pass
-    return biturl
+    return bit_url
+
+
+def get_domain(url):
+    return urlparse.urlparse(url).netloc
